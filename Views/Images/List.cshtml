@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "List Images";
+}
+@model IEnumerable<ImageStore>;
+<h1>List Images</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var obj in Model)
+        {
+            <tr>
+                <td>@obj.Id</td>
+                <td><a asp-controller="Images" asp-action="ViewDetail" asp-route-id="@obj.Id"><image src="data:image/jpg;base64,@obj.ImageDataAsBase64" style="width: 300px; height: 200px;"></image></a></td>
+                <td><a class="btn btn-danger" asp-controller="Images" asp-action="Delete" asp-route-id="@obj.Id">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Login";
+}
+@model LoginModel;
+<div class="container">
+    <h1>Login Page</h1>
+    <form id="register" method="post" style="width: 400px;">
+        <div class="form-group flex-column mt-4" style="display:flex;">
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+            <div class="input-item mb-3 flex-column">
+                <input class="form-control mb-2" type="text" asp-for="Name" style="width: 100%;">
+                <span asp-validation-for="Name"></span>
+                <input class="form-control mb-2" type="password" asp-for="Password" style="width: 100%">
+                <span asp-validation-for="Password"></span>
+                <label asp-for="RememberMe" class="form-label">
+                    <input class="form-check-input" asp-for="RememberMe">
+                    Remember Me
+                </label>
+            </div>
+            
+            <button id="registerSubmit" type="submit" class="btn-primary btn btn-lg">Log in</button>
+        </div>
+    </form>
+    @if(@Model.ExternalLogins != null) {
+        @foreach(var provider in Model.ExternalLogins)
+        {
+            <div class="mt-2">
+                <a class="btn btn-danger btn-lg" asp-controller="ExternalLogin" asp-action="Handler" asp-route-ReturnUrl="@Model.ReturnUrl" asp-route-provider="@provider.Name">@provider.Name</a>
+            </div>
+        }
+    }
+    
+</div>

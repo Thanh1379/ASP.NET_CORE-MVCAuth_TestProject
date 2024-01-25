@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Post Images";
+}
+@model ImageStore;
+<h1>Post Images</h1>
+
+<div class="container flex-column">
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group flex-column mb-4">
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            <input class="form-control" type="file" asp-for="ImageFile">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </form>
+</div>
