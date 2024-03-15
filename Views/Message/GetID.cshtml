@@ -1,0 +1,12 @@
+@model UIDInputModel;
+<div class="container">
+    <form method="post">
+        <div class="form-group mb-2">
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            <label for="user-id-input">Type your friend UID's</label>
+            <span asp-validation-for="FriendUID"></span>
+            <input asp-for="FriendUID" id="user-id-input" class="form-control" type="text">
+        </div>
+        <button class="row btn-sm btn-primary" type="submit">Chat Now</button>
+    </form>
+</div>

@@ -1,0 +1,35 @@
+@page "/message-raw"
+@using Microsoft.AspNetCore.Identity;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form class="chat-form">
+        <div>
+            <label for="user-name">Chat As </label>
+            @{
+                var userName = User?.Identity?.Name ?? "Anonymous";
+            }
+            <input type="text" id="user-name" value="@userName" disabled>
+        </div>
+        <div>
+            <label for="message-input">Chat Here</label>
+            <input type="text" id="message-input">
+        </div>
+        <input type="button" id="send-button" value="send message">
+    </form>
+    <div id="message-display">
+        
+    </div>
+    <script src="~/js/signalr/dist/browser/signalr.js">
+        
+    </script>
+    <script src="~/js/chat.js">
+        
+    </script>
+</body>
+</html>

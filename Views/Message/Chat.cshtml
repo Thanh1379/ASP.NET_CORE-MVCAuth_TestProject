@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "Chat";
+}
+@model IEnumerable<MVCAuth1.Models.Message>;
+
+<partial name="_MessagesPartial"/>
+
+<div id="message-display">
+    @foreach(var message in Model)
+    {
+        <div class="mesage">@message.UserSend.UserName: @message.Content</div>
+    }
+</div>

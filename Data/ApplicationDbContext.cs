@@ -12,7 +12,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 
     }
     public DbSet<ImageStore> ImageStores {set; get;}
-    
+    public DbSet<Message> Messages{set; get;}
+    public DbSet<Friend> FriendList{set; get;}
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

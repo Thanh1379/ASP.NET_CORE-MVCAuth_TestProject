@@ -1,24 +1,50 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Options;
 using MVCAuth1.Data;
+using MVCAuth1.Hubs;
+using MVCAuth1.Services;
+using Neo4jClient;
+using NRedisStack;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Add SignalR
+builder.Services.AddSignalR();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+//Add Policy for allow CORS
+builder.Services.AddCors(options => {
+    options.AddPolicy("CORSPolicy", builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((hosts) => true));
+});
 //Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddDbContext<ApplicationDbContext>((options) => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
-
+builder.Services.AddSingleton<IImagesServeControllerConfiguration>(
+    new ImagesServeControllerConfiguration(builder.Configuration.GetSection("StaticFiles:UserStaticFiles:Images"))
+    );
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
                 .AddSignInManager<SignInManager<IdentityUser>>();
-
+//Add Redis
+var redisRepoHost = builder.Configuration.GetSection("RedisRepo")?.GetValue<string>("Host");
+if(redisRepoHost != null)
+{
+    builder.Services.AddSingleton<ConnectionMultiplexer>(
+        ConnectionMultiplexer.Connect(redisRepoHost)
+    );
+}
+else
+{
+    throw new Exception("Not Find Redis Repo");
+}
 builder.Services.Configure<IdentityOptions>((options) => {
     //configure password
     options.Password.RequiredLength = 3;
@@ -47,7 +73,7 @@ builder.Services.Configure<SessionOptions>((options) => {
 });
 builder.Services.ConfigureApplicationCookie((options) => {
     options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromSeconds(30);
+    options.ExpireTimeSpan = TimeSpan.FromDays(1);
     options.LoginPath = "/Account/Login";
     options.LogoutPath = "/Account/Logout";
     options.AccessDeniedPath = "/AccessDenied";
@@ -68,9 +94,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseCors("CORSPolicy");
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+//app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession();
@@ -78,8 +104,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.UseStaticFiles();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapHub<ChatHub>("/Chat");
 app.Run();

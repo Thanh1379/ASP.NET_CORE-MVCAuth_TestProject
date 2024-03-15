@@ -4,6 +4,7 @@ using MVCAuth1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVCAuth1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240313091936_AddMessageTable")]
+    partial class AddMessageTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,29 +24,6 @@ namespace MVCAuth1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("MVCAuth1.Models.Friend", b =>
-                {
-                    b.Property<int>("FriendId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FriendId"));
-
-                    b.Property<string>("user1Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("user2Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("FriendId");
-
-                    b.HasIndex("user1Id");
-
-                    b.HasIndex("user2Id");
-
-                    b.ToTable("FriendList");
-                });
 
             modelBuilder.Entity("MVCAuth1.Models.ImageStore", b =>
                 {
@@ -73,9 +53,6 @@ namespace MVCAuth1.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("SendingTime")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("userReceiveId")
                         .HasColumnType("nvarchar(450)");
@@ -289,21 +266,6 @@ namespace MVCAuth1.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("MVCAuth1.Models.Friend", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User1")
-                        .WithMany()
-                        .HasForeignKey("user1Id");
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User2")
-                        .WithMany()
-                        .HasForeignKey("user2Id");
-
-                    b.Navigation("User1");
-
-                    b.Navigation("User2");
                 });
 
             modelBuilder.Entity("MVCAuth1.Models.Message", b =>

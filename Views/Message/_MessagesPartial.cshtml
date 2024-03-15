@@ -1,0 +1,25 @@
+@using Microsoft.AspNetCore.Identity;
+<form class="chat-form">
+    <div>
+        Chat With
+        <div id="user-name"></div>
+    </div>
+    <div>
+        <label for="message-input">Chat Here</label>
+        <input type="text" id="message-input">
+    </div>
+    <input type="button" id="send-button" value="send message">
+</form>
+
+<script src="~/js/signalr/dist/browser/signalr.js">
+    
+</script>
+<script src="~/js/chat.js">
+    
+</script>
+<script>
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+    });
+    document.getElementById("user-name").textContent = params.friendUID;
+</script>
